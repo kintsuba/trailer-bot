@@ -11,5 +11,5 @@ bin           = @["trailer_bot"]
 
 # Dependencies
 
-requires "nim >= 1.0.6"
+requires "nim >= 0.10.2"
 requires "yaml >= 0.13.0"
