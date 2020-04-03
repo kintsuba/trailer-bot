@@ -18,6 +18,7 @@ var settings: Settings;
 let s = newFileStream("settings.yaml")
 
 var token: string
+var lastNoteId: string
 
 proc countToInt(rcs: seq[ReactionCount]): int =
   var count = 0
@@ -50,11 +51,12 @@ proc renoteTarget() {.async.} =
 
   var targetNote = Note(id: "", renoteCount: 0, reactionCounts: @[])
   for note in notes:
-    if targetNote.allCount < note.allCount:
+    if lastNoteId != note.id and targetNote.allCount < note.allCount:
       targetNote = note
   
   if targetNote.id != "":
     echo await renote(token, targetNote.id, "home")
+    lastNoteId = targetNote.id;
 
 proc action() {.async.} =
   try:
