@@ -1,41 +1,77 @@
-import ws, asyncdispatch
-import json, strutils
+import json, os, sequtils, asyncdispatch
 import yaml/serialization, streams
 import misskey
+
+type ReactionCount = tuple
+  reactionType: string
+  count:int
+
+type Note = object
+  id: string
+  renoteCount: int
+  reactionCounts: seq[ReactionCount]
 
 type Settings = object
   token: string
 
+var settings: Settings;
+let s = newFileStream("settings.yaml")
+
+var token: string
+
+proc countToInt(rcs: seq[ReactionCount]): int =
+  var count = 0
+  for rc in rcs:
+    count += rc.count
+
+  return count
+
+proc allCount(note: Note): int =
+  return note.renoteCount + note.reactionCounts.countToInt
+
+proc jsonToNotes(json: JsonNode): seq[Note] =
+  var notes: seq[Note]
+  for noteData in json:
+    var note: Note
+    note.id = noteData["id"].getStr
+    note.renoteCount = noteData["renoteCount"].getInt
+    var rcSeq: seq[ReactionCount]
+    for rc in noteData["reactionCounts"].pairs:
+      rcSeq.add((reactionType: rc.key, count: rc.val.getInt))
+
+    notes.add(note);
+  
+  return notes
+
+proc renoteTarget() {.async.} =
+  let globalNotesData = await getGlobalTL(token, 100)
+  let localNotesData = await getLocalTL(token, 50)
+  let notes = globalNotesData.jsonToNotes.concat(localNotesData.jsonToNotes)
+
+  var targetNote = Note(id: "", renoteCount: 0, reactionCounts: @[])
+  for note in notes:
+    if targetNote.allCount < note.allCount:
+      targetNote = note
+  
+  if targetNote.id != "":
+    echo await renote(token, targetNote.id, "home")
+
+proc action() {.async.} =
+  try:
+    await renoteTarget()
+  except KeyError as e:
+    echo e.msg
+  except:
+    echo "HTTP Error. Auto Retry...."
+    await action()
+    
+
 proc main() {.async.} =
-  var settings: Settings;
-  let s = newFileStream("settings.yaml")
   load(s, settings)
-
-  let token = settings.token
-  let ws = await newWebSocket("wss://misskey.m544.net/streaming?i=" & token)
-  echo "Login Success !!"
-
-  await ws.send(connectGlobalTLString);
-
+  token = settings.token
   while true:
-    let json = await ws.receiveStrPacket()
-    var data : JsonNode
-    try:
-      data = parseJson(json)
-    except JsonParsingError as e:
-      if json != "":
-        echo e.msg & "\n" & json;
+    await action()
+    sleep(600000) # 多分10分
 
-    try:
-      if $data["body"]["id"].getStr == "globaltl":
-        let body = data["body"]["body"]
-        let text = $body["text"].getStr
-        echo text
-        if text.contains("めいめい"):
-          echo renote(token, $data{"body", "body", "id"}.getStr, "home")
-    except AssertionError as e:
-      if json != "":
-        echo e.msg & "\n" & json;
-
-asyncCheck main()
+waitFor main()
 runForever()
