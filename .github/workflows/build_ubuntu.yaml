@@ -31,7 +31,7 @@ jobs:
         echo $PATH
         nimble build -y
         mkdir -p rel
-        mv MisskeyNotesGetter rel/
+        mv trailer_bot rel/
     - name: Upload artifact
       uses: actions/upload-artifact@master
       with:
