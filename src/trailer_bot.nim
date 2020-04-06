@@ -39,6 +39,7 @@ proc jsonToNotes(json: JsonNode): seq[Note] =
     var rcSeq: seq[ReactionCount]
     for rc in noteData["reactionCounts"].pairs:
       rcSeq.add((reactionType: rc.key, count: rc.val.getInt))
+    note.myRenoteId = noteData["myRenoteId"].getStr
 
     notes.add(note);
   
