@@ -39,6 +39,7 @@ proc jsonToNotes(json: JsonNode): seq[Note] =
     var rcSeq: seq[ReactionCount]
     for rc in noteData["reactionCounts"].pairs:
       rcSeq.add((reactionType: rc.key, count: rc.val.getInt))
+    note.reactionCounts = rcSeq;
     note.myRenoteId = noteData["myRenoteId"].getStr
 
     notes.add(note);
@@ -63,10 +64,6 @@ proc action() {.async.} =
     await renoteTarget()
   except KeyError as e:
     echo e.msg
-  except:
-    echo "HTTP Error. Auto Retry...."
-    await action()
-    
 
 proc main() {.async.} =
   load(s, settings)
