@@ -64,13 +64,16 @@ proc action() {.async.} =
     await renoteTarget()
   except KeyError as e:
     echo e.msg
+  except:
+    echo "HTTP Error. Auto Retry...."
+    await action()
 
 proc main() {.async.} =
   load(s, settings)
   token = settings.token
   while true:
     await action()
-    sleep(600000) # 多分10分
+    sleep(600000)
 
 waitFor main()
 runForever()
