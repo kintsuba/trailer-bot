@@ -20,7 +20,11 @@ interval: 900000
 
 # Lower limit number of reaction + renote
 # 投稿するリアクション数 + リノート数の下限
-limit: 5
+limitCounts: 5
+
+# How many minutes before to get Notes
+# 何分前までの投稿まで取得するか
+limitMinutes: 180
 ```
 4. run
 
