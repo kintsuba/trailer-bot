@@ -68,8 +68,11 @@ proc renoteTarget(untilId: string) {.async.} =
   if targetNote.id == "": return
   
   if targetNote.allCount >= settings.limit:
+    # カウントの下限条件を満たしていたらリノートする
     echo await renote(token, targetNote.id, "home")
   else:
+    # ダメだったらちょっと待ってからもう1回リクエスト
+    sleep(1000)
     await renoteTarget(globalNotes[99].id)
 
 
