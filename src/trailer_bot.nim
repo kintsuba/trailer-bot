@@ -12,6 +12,7 @@ type Note = object
   reactionCounts: seq[ReactionCount]
   myRenoteId: string
   createdAt: DateTime
+  localOnly: bool
 
 type Settings = object
   token: string
@@ -46,6 +47,7 @@ proc jsonToNotes(json: JsonNode): seq[Note] =
     note.reactionCounts = rcSeq;
     note.myRenoteId = noteData["myRenoteId"].getStr
     note.createdAt = noteData["createdAt"].getStr.parse("yyyy-MM-dd'T'hh:mm:ss'.'fff'Z'")
+    note.localOnly = noteData["localOnly"].getBool
 
     notes.add(note);
   
@@ -65,7 +67,7 @@ proc renoteTarget(untilId: string) {.async.} =
 
   var targetNote = Note(id: "", renoteCount: 0, reactionCounts: @[], myRenoteId: "", createdAt: now())
   for note in notes:
-    if note.myRenoteId == "" and targetNote.allCount < note.allCount:
+    if note.myRenoteId == "" and not note.localOnly and targetNote.allCount < note.allCount:
       targetNote = note
   
   if targetNote.id != "" and targetNote.allCount >= settings.limitCounts:
