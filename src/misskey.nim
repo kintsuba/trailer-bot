@@ -1,15 +1,5 @@
 import asyncdispatch, httpClient, json
 
-const connectGlobalTLString* = """
-{
-  "type": "connect",
-  "body": {
-    "channel": "globalTimeline",
-    "id": "globaltl"
-  }
-}
-"""
-
 let client = newAsyncHttpClient()
 client.headers = newHttpHeaders({ "Content-Type": "application/json" })
 
