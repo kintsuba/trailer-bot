@@ -1,4 +1,4 @@
-import json, os, sequtils, asyncdispatch
+import json, os, sequtils, asyncdispatch, httpclient
 import yaml/serialization, streams
 import misskey
 
@@ -64,8 +64,8 @@ proc action() {.async.} =
     await renoteTarget()
   except KeyError as e:
     echo e.msg
-  except:
-    echo "HTTP Error. Auto Retry...."
+  except ProtocolError as e:
+    echo e.msg
     await action()
 
 proc main() {.async.} =
