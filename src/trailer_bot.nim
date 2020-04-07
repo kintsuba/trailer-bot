@@ -1,4 +1,4 @@
-import json, os, sequtils, asyncdispatch, httpclient
+import json, os, times, asyncdispatch, httpclient
 import yaml/serialization, streams
 import misskey
 
@@ -10,12 +10,14 @@ type Note = object
   id: string
   renoteCount: int
   reactionCounts: seq[ReactionCount]
-  myRenoteId: string;
+  myRenoteId: string
+  createdAt: DateTime
 
 type Settings = object
   token: string
   interval: int
-  limit: int
+  limitCounts: int
+  limitMinutes: int
 
 var settings: Settings;
 let s = newFileStream("settings.yaml")
@@ -35,7 +37,7 @@ proc allCount(note: Note): int =
 proc jsonToNotes(json: JsonNode): seq[Note] =
   var notes: seq[Note]
   for noteData in json:
-    var note: Note
+    var note = Note(id: "", renoteCount: 0, reactionCounts: @[], myRenoteId: "", createdAt: now())
     note.id = noteData["id"].getStr
     note.renoteCount = noteData["renoteCount"].getInt
     var rcSeq: seq[ReactionCount]
@@ -43,6 +45,7 @@ proc jsonToNotes(json: JsonNode): seq[Note] =
       rcSeq.add((reactionType: rc.key, count: rc.val.getInt))
     note.reactionCounts = rcSeq;
     note.myRenoteId = noteData["myRenoteId"].getStr
+    note.createdAt = noteData["createdAt"].getStr.parse("yyyy-MM-dd'T'hh:mm:ss'.'fff'Z'")
 
     notes.add(note);
   
@@ -54,24 +57,25 @@ proc renoteTarget(untilId: string) {.async.} =
       await getGlobalTL(token, 100)
     else:
       await getGlobalTL(token, 100, untilId)
-  let localNotesData = await getLocalTL(token, 50)
+  let localNotesData = await getLocalTL(token, 100)
 
   let globalNotes = globalNotesData.jsonToNotes
   let localNotes = localNotesData.jsonToNotes
-  let notes = globalNotes.concat(localNotes)
+  let notes = globalNotes & localNotes
 
-  var targetNote = Note(id: "", renoteCount: 0, reactionCounts: @[])
+  var targetNote = Note(id: "", renoteCount: 0, reactionCounts: @[], myRenoteId: "", createdAt: now())
   for note in notes:
     if note.myRenoteId == "" and targetNote.allCount < note.allCount:
       targetNote = note
   
-  if targetNote.id == "": return
-  
-  if targetNote.allCount >= settings.limit:
-    # カウントの下限条件を満たしていたらリノートする
+  if targetNote.id != "" and targetNote.allCount >= settings.limitCounts:
+    # 該当する投稿があって、カウントの下限条件を満たしていたらリノートする
+    echo await renote(token, targetNote.id, "home")
+  elif targetNote.createdAt.toTime < (getTime() - settings.limitMinutes.minutes):
+    # 3時間以上前のやつだったら諦めてそれをリノートする
     echo await renote(token, targetNote.id, "home")
   else:
-    # ダメだったらちょっと待ってからもう1回リクエスト
+    # ダメだったらちょっと待ってから、それより前をもう1回リクエスト
     sleep(1000)
     await renoteTarget(globalNotes[99].id)
 
