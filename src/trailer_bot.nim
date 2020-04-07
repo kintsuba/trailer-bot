@@ -14,6 +14,8 @@ type Note = object
 
 type Settings = object
   token: string
+  interval: int
+  limit: int
 
 var settings: Settings;
 let s = newFileStream("settings.yaml")
@@ -46,22 +48,34 @@ proc jsonToNotes(json: JsonNode): seq[Note] =
   
   return notes
 
-proc renoteTarget() {.async.} =
-  let globalNotesData = await getGlobalTL(token, 100)
+proc renoteTarget(untilId: string) {.async.} =
+  let globalNotesData: JsonNode =
+    if untilId == "":
+      await getGlobalTL(token, 100)
+    else:
+      await getGlobalTL(token, 100, untilId)
   let localNotesData = await getLocalTL(token, 50)
-  let notes = globalNotesData.jsonToNotes.concat(localNotesData.jsonToNotes)
+
+  let globalNotes = globalNotesData.jsonToNotes
+  let localNotes = localNotesData.jsonToNotes
+  let notes = globalNotes.concat(localNotes)
 
   var targetNote = Note(id: "", renoteCount: 0, reactionCounts: @[])
   for note in notes:
     if note.myRenoteId == "" and targetNote.allCount < note.allCount:
       targetNote = note
   
-  if targetNote.id != "":
+  if targetNote.id == "": return
+  
+  if targetNote.allCount >= settings.limit:
     echo await renote(token, targetNote.id, "home")
+  else:
+    await renoteTarget(globalNotes[99].id)
+
 
 proc action() {.async.} =
   try:
-    await renoteTarget()
+    await renoteTarget("")
   except KeyError as e:
     echo e.msg
   except ProtocolError as e:
@@ -73,7 +87,7 @@ proc main() {.async.} =
   token = settings.token
   while true:
     await action()
-    sleep(600000)
+    sleep(settings.interval)
 
 waitFor main()
 runForever()
