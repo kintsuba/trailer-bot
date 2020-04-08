@@ -59,7 +59,7 @@ proc renoteTarget(untilId: string) {.async.} =
       await getGlobalTL(token, 100)
     else:
       await getGlobalTL(token, 100, untilId)
-      
+
   let notes = notesData.jsonToNotes
 
   var targetNote = Note(id: "", renoteCount: 0, reactionCounts: @[], myRenoteId: "", createdAt: now())
@@ -76,7 +76,7 @@ proc renoteTarget(untilId: string) {.async.} =
   else:
     # ダメだったらちょっと待ってから、それより前をもう1回リクエスト
     sleep(1000)
-    await renoteTarget(globalNotes[99].id)
+    await renoteTarget(notes[99].id)
 
 
 proc action() {.async.} =
