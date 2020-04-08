@@ -35,15 +35,6 @@ proc getGlobalTL*(token: string, limit: int, untilId: string): Future[JsonNode] 
   }
   return await requestMisskey("notes/global-timeline", httpMethod = HttpPost, body = $body)
 
-
-proc getLocalTL*(token: string, limit: int): Future[JsonNode] {.async.} =
-  let body = %*{
-    "i": token,
-    "limit": limit
-  }
-  return await requestMisskey("notes/local-timeline", httpMethod = HttpPost, body = $body)
-
-
 proc renote*(token: string, renoteId: string, visibility: string): Future[JsonNode] {.async.} =
   let body = %*{
     "i": token,

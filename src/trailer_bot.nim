@@ -54,16 +54,13 @@ proc jsonToNotes(json: JsonNode): seq[Note] =
   return notes
 
 proc renoteTarget(untilId: string) {.async.} =
-  let globalNotesData: JsonNode =
+  let notesData: JsonNode =
     if untilId == "":
       await getGlobalTL(token, 100)
     else:
       await getGlobalTL(token, 100, untilId)
-  let localNotesData = await getLocalTL(token, 100)
-
-  let globalNotes = globalNotesData.jsonToNotes
-  let localNotes = localNotesData.jsonToNotes
-  let notes = globalNotes & localNotes
+      
+  let notes = notesData.jsonToNotes
 
   var targetNote = Note(id: "", renoteCount: 0, reactionCounts: @[], myRenoteId: "", createdAt: now())
   for note in notes:
