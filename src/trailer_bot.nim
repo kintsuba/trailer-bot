@@ -1,4 +1,4 @@
-import json, os, times, asyncdispatch, httpclient
+import json, os, times, asyncdispatch, httpclient, random
 import yaml/serialization, streams
 import misskey
 
@@ -80,6 +80,22 @@ proc renoteTarget(untilId: string) {.async.} =
 
 
 proc action() {.async.} =
+  randomize()
+  if 0 == rand(99): # 1/100 で転ぶ
+    let text: string = 
+      case rand(2)
+      of 0:
+        "いったたたぁ……。今日も転んじゃいました……"
+      of 1:
+        "あわわわわ……いたっ。転んじゃいましたぁ"
+      of 2:
+        "うぇ！？……はわわ、いたいですぅ"
+      else:
+        "はわわわわ……"
+
+    discard note(token, text, "home")
+    return
+    
   try:
     await renoteTarget("")
   except KeyError as e:

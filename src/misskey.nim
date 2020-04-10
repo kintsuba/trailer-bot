@@ -42,3 +42,11 @@ proc renote*(token: string, renoteId: string, visibility: string): Future[JsonNo
     "visibility": visibility
   }
   return await requestMisskey("notes/create", httpMethod = HttpPost, body = $body)
+
+proc note*(token: string, text: string, visibility: string): Future[JsonNode] {.async.} =
+  let body = %*{
+    "i": token,
+    "text": text,
+    "visibility": visibility
+  }
+  return await requestMisskey("notes/create", httpMethod = HttpPost, body = $body)
