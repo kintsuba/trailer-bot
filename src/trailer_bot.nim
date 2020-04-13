@@ -78,31 +78,37 @@ proc renoteTarget(untilId: string) {.async.} =
     sleep(1000)
     await renoteTarget(notes[99].id)
 
+proc fall() {.async.} =
+  let text: string = 
+    case rand(2)
+    of 0:
+      "いったたたぁ……。今日も転んじゃいました……"
+    of 1:
+      "あわわわわ……いたっ。転んじゃいましたぁ"
+    of 2:
+      "うぇ！？……はわわ、いたいですぅ"
+    else:
+      "はわわわわ……"
+  
+  echo await note(token, text, "home")
 
 proc action() {.async.} =
   randomize()
   if 0 == rand(99): # 1/100 で転ぶ
-    let text: string = 
-      case rand(2)
-      of 0:
-        "いったたたぁ……。今日も転んじゃいました……"
-      of 1:
-        "あわわわわ……いたっ。転んじゃいましたぁ"
-      of 2:
-        "うぇ！？……はわわ、いたいですぅ"
-      else:
-        "はわわわわ……"
+    try:
+      await fall()
+    except ProtocolError as e:
+      echo e.msg
+      await fall()
 
-    echo await note(token, text, "home")
-    return
-    
-  try:
-    await renoteTarget("")
-  except KeyError as e:
-    echo e.msg
-  except ProtocolError as e:
-    echo e.msg
-    await action()
+  else:  
+    try:
+      await renoteTarget("")
+    except KeyError as e:
+      echo e.msg
+    except ProtocolError as e:
+      echo e.msg
+      await renoteTarget("")
 
 proc main() {.async.} =
   load(s, settings)
