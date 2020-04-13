@@ -93,7 +93,7 @@ proc action() {.async.} =
       else:
         "はわわわわ……"
 
-    discard note(token, text, "home")
+    echo await note(token, text, "home")
     return
     
   try:

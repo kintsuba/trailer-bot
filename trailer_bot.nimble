@@ -1,7 +1,7 @@
 # Package
 
 version       = "0.1.0"
-author        = "n-nagai"
+author        = "kintsuba"
 description   = "Trailer-chan bot for Misskey."
 license       = "MIT"
 srcDir        = "src"
