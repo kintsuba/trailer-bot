@@ -70,7 +70,7 @@ proc renoteTarget(untilId: string) {.async.} =
   if targetNote.id != "" and targetNote.allCount >= settings.limitCounts:
     # 該当する投稿があって、カウントの下限条件を満たしていたらリノートする
     echo await renote(token, targetNote.id, "home")
-  elif targetNote.createdAt.toTime < (getTime() - settings.limitMinutes.minutes):
+  elif targetNote.id != "" and targetNote.createdAt.toTime < (getTime() - settings.limitMinutes.minutes):
     # 3時間以上前のやつだったら諦めてそれをリノートする
     echo await renote(token, targetNote.id, "home")
   else:
