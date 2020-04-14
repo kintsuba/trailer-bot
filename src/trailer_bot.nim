@@ -53,7 +53,7 @@ proc jsonToNotes(json: JsonNode): seq[Note] =
   
   return notes
 
-proc renoteTarget(untilId: string) {.async.} =
+proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCount: 0, reactionCounts: @[], myRenoteId: "", createdAt: now())) {.async.} =
   let notesData: JsonNode =
     if untilId == "":
       await getGlobalTL(token, 100)
@@ -62,7 +62,7 @@ proc renoteTarget(untilId: string) {.async.} =
 
   let notes = notesData.jsonToNotes
 
-  var targetNote = Note(id: "", renoteCount: 0, reactionCounts: @[], myRenoteId: "", createdAt: now())
+  var targetNote = lastNote
   for note in notes:
     if note.myRenoteId == "" and not note.localOnly and targetNote.allCount < note.allCount:
       targetNote = note
@@ -76,7 +76,7 @@ proc renoteTarget(untilId: string) {.async.} =
   else:
     # ダメだったらちょっと待ってから、それより前をもう1回リクエスト
     sleep(1000)
-    await renoteTarget(notes[99].id)
+    await renoteTarget(notes[99].id, targetNote)
 
 proc fall() {.async.} =
   let text: string = 
@@ -103,12 +103,12 @@ proc action() {.async.} =
 
   else:  
     try:
-      await renoteTarget("")
+      await renoteTarget()
     except KeyError as e:
       echo e.msg
     except ProtocolError as e:
       echo e.msg
-      await renoteTarget("")
+      await renoteTarget()
 
 proc main() {.async.} =
   load(s, settings)
