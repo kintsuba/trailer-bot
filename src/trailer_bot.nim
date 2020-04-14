@@ -70,8 +70,8 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
   if targetNote.id != "" and targetNote.allCount >= settings.limitCounts:
     # 該当する投稿があって、カウントの下限条件を満たしていたらリノートする
     echo await renote(token, targetNote.id, "home")
-  elif targetNote.id != "" and targetNote.createdAt.toTime < (getTime() - settings.limitMinutes.minutes):
-    # 3時間以上前のやつだったら諦めてそれをリノートする
+  elif targetNote.id != "" and targetNote.createdAt.toTime < (getTime() - settings.limitMinutes.minutes - 9.hours):
+    # 指定時間以上前のやつだったら諦めてそれをリノートする
     echo await renote(token, targetNote.id, "home")
   else:
     # ダメだったらちょっと待ってから、それより前をもう1回リクエスト
