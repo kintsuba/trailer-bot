@@ -50,3 +50,10 @@ proc note*(token: string, text: string, visibility: string): Future[JsonNode] {.
     "visibility": visibility
   }
   return await requestMisskey("notes/create", httpMethod = HttpPost, body = $body)
+
+proc showUser*(token: string, userId: string): Future[JsonNode] {.async.} =
+  let body = %*{
+    "i": token,
+    "userId": userId
+  }
+  return await requestMisskey("users/show", httpMethod = HttpPost, body = $body)

@@ -4,11 +4,12 @@ import misskey
 
 type ReactionCount = tuple
   reactionType: string
-  count:int
+  count: int
 
 type Note = object
   id: string
-  text :string
+  text : string
+  userId: string
   renoteCount: int
   reactionCounts: seq[ReactionCount]
   myRenoteId: string
@@ -42,6 +43,7 @@ proc jsonToNotes(json: JsonNode): seq[Note] =
     var note = Note(id: "", renoteCount: 0, reactionCounts: @[], myRenoteId: "", createdAt: now())
     note.id = noteData["id"].getStr
     note.text = noteData["text"].getStr
+    note.userId = noteData["userId"].getStr
     note.renoteCount = noteData["renoteCount"].getInt
     var rcSeq: seq[ReactionCount]
     for rc in noteData["reactionCounts"].pairs:
@@ -66,8 +68,11 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
 
   var targetNote = lastNote
   for note in notes:
-    if note.myRenoteId == "" and not note.localOnly and not note.text.contains("#nobot") and targetNote.allCount < note.allCount:
+    let user = await showUser(token, note.userId)
+    let description = user["description"].getStr
+    if note.myRenoteId == "" and not note.localOnly and not note.text.contains("#nobot") and not description.contains("#nobot") and targetNote.allCount < note.allCount:
       targetNote = note
+    sleep(1000)
   
   if targetNote.id != "" and targetNote.allCount >= settings.limitCounts:
     # 該当する投稿があって、カウントの下限条件を満たしていたらリノートする
