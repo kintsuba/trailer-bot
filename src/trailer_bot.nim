@@ -1,4 +1,4 @@
-import json, os, times, asyncdispatch, httpclient, random
+import json, os, times, asyncdispatch, httpclient, random, strutils
 import yaml/serialization, streams
 import misskey
 
@@ -8,6 +8,7 @@ type ReactionCount = tuple
 
 type Note = object
   id: string
+  text :string
   renoteCount: int
   reactionCounts: seq[ReactionCount]
   myRenoteId: string
@@ -40,6 +41,7 @@ proc jsonToNotes(json: JsonNode): seq[Note] =
   for noteData in json:
     var note = Note(id: "", renoteCount: 0, reactionCounts: @[], myRenoteId: "", createdAt: now())
     note.id = noteData["id"].getStr
+    note.text = noteData["text"].getStr
     note.renoteCount = noteData["renoteCount"].getInt
     var rcSeq: seq[ReactionCount]
     for rc in noteData["reactionCounts"].pairs:
@@ -64,7 +66,7 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
 
   var targetNote = lastNote
   for note in notes:
-    if note.myRenoteId == "" and not note.localOnly and targetNote.allCount < note.allCount:
+    if note.myRenoteId == "" and not note.localOnly and not note.text.contains("#nobot") and targetNote.allCount < note.allCount:
       targetNote = note
   
   if targetNote.id != "" and targetNote.allCount >= settings.limitCounts:
