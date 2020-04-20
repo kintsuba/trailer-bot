@@ -68,11 +68,13 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
 
   var targetNote = lastNote
   for note in notes:
-    let user = await showUser(token, note.userId)
-    let description = user["description"].getStr
-    if note.myRenoteId == "" and not note.localOnly and not note.text.contains("#nobot") and not description.contains("#nobot") and targetNote.allCount < note.allCount:
-      targetNote = note
-    sleep(1000)
+    if note.myRenoteId == "" and not note.localOnly and not note.text.contains("#nobot") and targetNote.allCount < note.allCount:
+      let user = await showUser(token, note.userId)
+      let description = user["description"].getStr
+      # bio に #nobot があったら除外
+      if not description.contains("#nobot"):
+       targetNote = note
+      sleep(1000)
   
   if targetNote.id != "" and targetNote.allCount >= settings.limitCounts:
     # 該当する投稿があって、カウントの下限条件を満たしていたらリノートする
