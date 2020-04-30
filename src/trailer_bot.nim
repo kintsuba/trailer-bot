@@ -108,7 +108,7 @@ proc action() {.async.} =
       await fall()
     except ProtocolError as e:
       echo e.msg
-      await fall()
+      await action()
 
   else:  
     try:
@@ -117,7 +117,7 @@ proc action() {.async.} =
       echo e.msg
     except ProtocolError as e:
       echo e.msg
-      await renoteTarget()
+      await action()
 
 proc main() {.async.} =
   load(s, settings)
