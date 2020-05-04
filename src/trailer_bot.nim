@@ -89,13 +89,15 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
 
 proc fall() {.async.} =
   let text: string = 
-    case rand(2)
+    case rand(3)
     of 0:
       "いったたたぁ……。今日も転んじゃいましたぁ……"
     of 1:
       "あわわわわ……いたっ。転んじゃいましたぁ"
     of 2:
       "うぇ！？……はわわ、いたいですぅ"
+    of 3:
+      "ぐへっ"
     else:
       "はわわわわ……"
   
@@ -103,7 +105,7 @@ proc fall() {.async.} =
 
 proc action() {.async.} =
   randomize()
-  if 0 == rand(99): # 1/100 で転ぶ
+  if 0 == rand(499): # 1/500 で転ぶ
     try:
       await fall()
     except ProtocolError as e:
