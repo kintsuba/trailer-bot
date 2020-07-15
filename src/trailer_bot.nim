@@ -15,6 +15,7 @@ type Note = object
   myRenoteId: string
   createdAt: DateTime
   localOnly: bool
+  copyOnce: bool
 
 type Settings = object
   token: string
@@ -52,6 +53,7 @@ proc jsonToNotes(json: JsonNode): seq[Note] =
     note.myRenoteId = noteData["myRenoteId"].getStr
     note.createdAt = noteData["createdAt"].getStr.parse("yyyy-MM-dd'T'hh:mm:ss'.'fff'Z'")
     note.localOnly = noteData["localOnly"].getBool
+    note.copyOnce = noteData["copyOnce"].getBool
 
     notes.add(note);
   
@@ -68,7 +70,7 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
 
   var targetNote = lastNote
   for note in notes:
-    if note.myRenoteId == "" and not note.localOnly and not note.text.contains("#nobot") and targetNote.allCount < note.allCount:
+    if note.myRenoteId == "" and not note.localOnly and not note.copyOnce and not note.text.contains("#nobot") and targetNote.allCount < note.allCount:
       let user = await showUser(token, note.userId)
       let description = user["description"].getStr
       # bio に #nobot があったら除外
