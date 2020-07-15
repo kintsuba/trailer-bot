@@ -1,4 +1,4 @@
-import json, os, times, asyncdispatch, httpclient, random, strutils
+import json, os, times, asyncdispatch, httpclient, random, strutils, net
 import yaml/serialization, streams
 import misskey
 
@@ -111,6 +111,9 @@ proc action() {.async.} =
     except ProtocolError as e:
       echo e.msg
       await action()
+    except SslError as e:
+      echo e.msg
+      await action()
 
   else:  
     try:
@@ -118,6 +121,9 @@ proc action() {.async.} =
     except KeyError as e:
       echo e.msg
     except ProtocolError as e:
+      echo e.msg
+      await action()
+    except SslError as e:
       echo e.msg
       await action()
 
