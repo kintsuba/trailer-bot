@@ -65,6 +65,9 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
       await getGlobalTL(token, 100)
     else:
       await getGlobalTL(token, 100, untilId)
+  
+  if $notesData == "":
+    return
 
   let notes = notesData.jsonToNotes
 
