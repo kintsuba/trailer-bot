@@ -1,4 +1,4 @@
-import json, os, times, asyncdispatch, httpclient, random, strutils, net
+import json, os, times, asyncdispatch, httpclient, random, strutils, net, math
 import yaml/serialization, streams
 import misskey
 
@@ -78,7 +78,10 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
       let description = user["description"].getStr
       # bio に #nobot があったら除外
       if not description.contains("#nobot"):
-       targetNote = note
+        let followersCount = user["followersCount"].getInt
+        if targetNote.allCount < note.allCount - (followersCount.toFloat.log10.toInt - 1):
+          targetNote = note
+          
       sleep(1000)
   
   if targetNote.id != "" and targetNote.allCount >= settings.limitCounts:
