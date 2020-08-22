@@ -79,8 +79,12 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
       # bio に #nobot があったら除外
       if not description.contains("#nobot"):
         let followersCount = user["followersCount"].getInt
-        if targetNote.allCount < note.allCount - (followersCount.toFloat.log10.toInt - 1):
-          targetNote = note
+        if followersCount != 0:
+          if targetNote.allCount < note.allCount - (followersCount.toFloat.log10.toInt - 1):
+            targetNote = note
+        else:
+          if targetNote.allCount < note.allCount:
+            targetNote = note
           
       sleep(1000)
   
