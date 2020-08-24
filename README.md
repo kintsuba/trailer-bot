@@ -14,10 +14,6 @@ It's a Misskey Bot, search popular note in GTL and LTL, and note it.
 # あなたのアカウントの Misskey のトークン
 token: "!*******************"
 
-# Note interval(ms)
-# 投稿間隔(ms)
-interval: 900000
-
 # Lower limit number of reaction + renote
 # 投稿するリアクション数 + リノート数の下限
 limitCounts: 5

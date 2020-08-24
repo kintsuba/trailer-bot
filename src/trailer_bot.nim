@@ -142,9 +142,7 @@ proc action() {.async.} =
 proc main() {.async.} =
   load(s, settings)
   token = settings.token
-  while true:
-    await action()
-    sleep(settings.interval)
+  
+  await action()
 
 waitFor main()
-runForever()
