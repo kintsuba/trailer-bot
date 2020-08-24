@@ -19,7 +19,6 @@ type Note = object
 
 type Settings = object
   token: string
-  interval: int
   limitCounts: int
   limitMinutes: int
 
