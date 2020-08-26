@@ -72,20 +72,21 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
 
   var targetNote = lastNote
   for note in notes:
-    if note.myRenoteId == "" and not note.localOnly and not note.copyOnce and not note.text.contains("#nobot") and targetNote.allCount < note.allCount:
-      let user = await showUser(token, note.userId)
-      let description = user["description"].getStr
-      # bio に #nobot があったら除外
-      if not description.contains("#nobot"):
-        let followersCount = user["followersCount"].getInt
-        if followersCount != 0:
-          if targetNote.allCount < note.allCount - (followersCount.toFloat.log10.toInt - 1):
-            targetNote = note
-        else:
-          if targetNote.allCount < note.allCount:
-            targetNote = note
-          
-      sleep(1000)
+    if note.myRenoteId == "" and not note.localOnly and not note.copyOnce and targetNote.allCount < note.allCount:
+      if not note.text.contains("#nobot") and not note.text.contains("ログボ") and not note.text.contains("ﾌｸﾞﾊﾟﾝﾁ"):
+        let user = await showUser(token, note.userId)
+        let description = user["description"].getStr
+        # bio に #nobot があったら除外
+        if not description.contains("#nobot"):
+          let followersCount = user["followersCount"].getInt
+          if followersCount != 0:
+            if targetNote.allCount < note.allCount - (followersCount.toFloat.log10.toInt - 1):
+              targetNote = note
+          else:
+            if targetNote.allCount < note.allCount:
+              targetNote = note
+            
+        sleep(1000)
   
   if targetNote.id != "" and targetNote.allCount >= settings.limitCounts:
     # 該当する投稿があって、カウントの下限条件を満たしていたらリノートする
