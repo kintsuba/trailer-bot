@@ -16,6 +16,7 @@ type Note = object
   createdAt: DateTime
   localOnly: bool
   copyOnce: bool
+  score: int
 
 type Settings = object
   token: string
@@ -53,6 +54,7 @@ proc jsonToNotes(json: JsonNode): seq[Note] =
     note.createdAt = noteData["createdAt"].getStr.parse("yyyy-MM-dd'T'hh:mm:ss'.'fff'Z'")
     note.localOnly = noteData["localOnly"].getBool
     note.copyOnce = noteData["copyOnce"].getBool
+    note.score = noteData["score"].getInt
 
     notes.add(note);
   
@@ -72,7 +74,7 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
 
   var targetNote = lastNote
   for note in notes:
-    if note.myRenoteId == "" and not note.localOnly and not note.copyOnce and targetNote.allCount < note.allCount:
+    if note.myRenoteId == "" and not note.localOnly and not note.copyOnce and targetNote.score < note.score:
       if not note.text.contains("#nobot") and not note.text.contains("ログボ") and not note.text.contains("ﾌｸﾞﾊﾟﾝﾁ"):
         let user = await showUser(token, note.userId)
         let description = user["description"].getStr
@@ -80,15 +82,15 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
         if not description.contains("#nobot"):
           let followersCount = user["followersCount"].getInt
           if followersCount != 0:
-            if targetNote.allCount < note.allCount - (followersCount.toFloat.log10.toInt - 1):
+            if targetNote.score < note.score - ( 0.95 * (log(followersCount.toFloat, 3.2) - 1.15)).toInt:
               targetNote = note
           else:
-            if targetNote.allCount < note.allCount:
+            if targetNote.score < note.score:
               targetNote = note
             
         sleep(1000)
   
-  if targetNote.id != "" and targetNote.allCount >= settings.limitCounts:
+  if targetNote.id != "" and targetNote.score >= settings.limitCounts:
     # 該当する投稿があって、カウントの下限条件を満たしていたらリノートする
     echo await renote(token, targetNote.id, "home")
   elif targetNote.id != "" and targetNote.createdAt.toTime < (getTime() - settings.limitMinutes.minutes - 9.hours):
