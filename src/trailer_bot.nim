@@ -85,15 +85,16 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
           if followingCount != 0 and followersCount != 0:
             if targetNote.score < note.score - ( 0.95 * (log(followersCount.toFloat, 3.2) - 1.15)).toInt:
               targetNote = note
-            
+              echo "[" & $targetNote.score & "]" & " " & targetNote.text
+              echo notes[99].id
         sleep(500)
-  
+
   if targetNote.id != "" and targetNote.score >= settings.limitCounts:
     # 該当する投稿があって、カウントの下限条件を満たしていたらリノートする
-    echo await renote(token, targetNote.id, "home")
+    discard await renote(token, targetNote.id, "home")
   elif targetNote.id != "" and targetNote.createdAt.toTime < (getTime() - settings.limitMinutes.minutes - 9.hours):
     # 指定時間以上前のやつだったら諦めてそれをリノートする
-    echo await renote(token, targetNote.id, "home")
+    discard await renote(token, targetNote.id, "home")
   else:
     # ダメだったらちょっと待ってから、それより前をもう1回リクエスト
     sleep(500)
