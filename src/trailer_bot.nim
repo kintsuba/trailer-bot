@@ -102,7 +102,7 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
 
 proc fall() {.async.} =
   let text: string = 
-    case rand(3)
+    case rand(5)
     of 0:
       "いったたたぁ……。今日も転んじゃいましたぁ……"
     of 1:
@@ -113,6 +113,8 @@ proc fall() {.async.} =
       "ぐへっ"
     of 4:
       "これで配達完了っと……あれ、もしかして私、荷物積み忘れました……！？"
+    of 5:
+      "私が活躍する毎日こつこつ俺タワーもぜひプレイしてくださいね！え、私の活躍ですか？えーと……"
     else:
       "はわわわわ……"
   
