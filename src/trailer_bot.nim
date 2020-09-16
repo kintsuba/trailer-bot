@@ -78,8 +78,9 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
       if not note.text.contains("#nobot") and not note.text.contains("ログボ") and not note.text.contains("ﾌｸﾞﾊﾟﾝﾁ"):
         let user = await showUser(token, note.userId)
         let description = user["description"].getStr
-        # bio に #nobot があったら除外
-        if not description.contains("#nobot"):
+        let isBot = user["isBot"].getBool
+        # bio に #nobot があるかBotなら除外
+        if not description.contains("#nobot") and not isBot:
           let followingCount = user["followingCount"].getInt
           let followersCount = user["followersCount"].getInt
           if followingCount != 0 and followersCount != 0:
