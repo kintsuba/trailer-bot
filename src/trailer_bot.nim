@@ -119,7 +119,7 @@ proc fall() {.async.} =
     else:
       "はわわわわ……"
   
-  echo await note(token, text, "home")
+  echo await note(token, text, "public")
 
 proc action() {.async.} =
   randomize()
