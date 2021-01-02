@@ -84,7 +84,10 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
           let followingCount = user["followingCount"].getInt
           let followersCount = user["followersCount"].getInt
           if followingCount != 0 and followersCount != 0:
-            if targetNote.score < note.score - ( 0.95 * (log(followersCount.toFloat, 3.2) - 1.15)).toInt:
+            var bonus = 0
+            if note.text.contains("俺タワー"): bonus += 1
+            if note.text.contains("毎日こつこつ"): bonus += 1
+            if targetNote.score < note.score - ( 0.95 * (log(followersCount.toFloat, 3.2) - 1.15)).toInt + bonus:
               targetNote = note
               echo "[" & $targetNote.score & "]" & " " & targetNote.text
               echo notes[99].id
