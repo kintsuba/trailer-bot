@@ -87,11 +87,11 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
             var bonus = 0
             if note.text.contains("俺タワー"): bonus += 1
             if note.text.contains("毎日こつこつ"): bonus += 1
-            if targetNote.score < note.score - ( 0.95 * (log(followersCount.toFloat, 3.2) - 1.15)).toInt + bonus:
+            if targetNote.score < note.score - ( 0.95 * (log(followersCount.toFloat, 3.2) - 0.15)).toInt + bonus:
               targetNote = note
               echo "[" & $targetNote.score & "]" & " " & targetNote.text
               echo notes[99].id
-        sleep(500)
+        sleep(1000)
 
   if targetNote.id != "" and targetNote.score >= settings.limitCounts:
     # 該当する投稿があって、カウントの下限条件を満たしていたらリノートする
@@ -101,7 +101,7 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
     discard await renote(token, targetNote.id, "home")
   else:
     # ダメだったらちょっと待ってから、それより前をもう1回リクエスト
-    sleep(500)
+    sleep(1000)
     await renoteTarget(notes[99].id, targetNote)
 
 proc fall() {.async.} =
