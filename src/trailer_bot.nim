@@ -83,7 +83,7 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
         if not description.contains("#nobot") and not isBot:
           let followingCount = user["followingCount"].getInt
           let followersCount = user["followersCount"].getInt
-          if followingCount != 0 and followersCount != 0:
+          if followingCount >= 3 and followersCount >= 3:
             var bonus = 0
             if note.text.contains("俺タワー"): bonus += 1
             if note.text.contains("毎日こつこつ"): bonus += 1
