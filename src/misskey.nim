@@ -1,16 +1,19 @@
 import asyncdispatch, httpClient, json
 
 let client = newAsyncHttpClient()
-client.headers = newHttpHeaders({ "Content-Type": "application/json" })
+client.headers = newHttpHeaders({"Content-Type": "application/json"})
 
 const host = "misskey.m544.net/api/"
 
-proc requestMisskey*(api: string, httpMethod: HttpMethod, body: string): Future[JsonNode] {.async.} =
-  let response = await client.request("https://" & host & api, httpMethod = HttpPost, body = $body)
+proc requestMisskey*(api: string, httpMethod: HttpMethod, body: string): Future[
+    JsonNode] {.async.} =
+  let response = await client.request("https://" & host & api,
+      httpMethod = HttpPost, body = $body)
   let body = await response.body
   return body.parseJson()
 
-proc getNotes*(token: string, userId: string, limit: int, sinceId: string, untilId: string): Future[JsonNode] {.async.} =
+proc getNotes*(token: string, userId: string, limit: int, sinceId: string,
+    untilId: string): Future[JsonNode] {.async.} =
   let body = %*{
     "i": token,
     "userId": userId,
@@ -27,7 +30,8 @@ proc getGlobalTL*(token: string, limit: int): Future[JsonNode] {.async.} =
   }
   return await requestMisskey("notes/global-timeline", httpMethod = HttpPost, body = $body)
 
-proc getGlobalTL*(token: string, limit: int, untilId: string): Future[JsonNode] {.async.} =
+proc getGlobalTL*(token: string, limit: int, untilId: string): Future[
+    JsonNode] {.async.} =
   let body = %*{
     "i": token,
     "limit": limit,
@@ -35,7 +39,8 @@ proc getGlobalTL*(token: string, limit: int, untilId: string): Future[JsonNode] 
   }
   return await requestMisskey("notes/global-timeline", httpMethod = HttpPost, body = $body)
 
-proc renote*(token: string, renoteId: string, visibility: string): Future[JsonNode] {.async.} =
+proc renote*(token: string, renoteId: string, visibility: string): Future[
+    JsonNode] {.async.} =
   let body = %*{
     "i": token,
     "renoteId": renoteId,
