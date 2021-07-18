@@ -91,7 +91,7 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
               targetNote = note
               echo "[" & $targetNote.score & "]" & " " & targetNote.text
               echo notes[99].id
-        sleep(1000)
+        sleep(5000)
 
   if targetNote.id != "" and targetNote.score >= settings.limitCounts:
     # 該当する投稿があって、カウントの下限条件を満たしていたらリノートする
@@ -101,7 +101,7 @@ proc renoteTarget(untilId: string = "", lastNote: Note = Note(id: "", renoteCoun
     discard await renote(token, targetNote.id, "home")
   else:
     # ダメだったらちょっと待ってから、それより前をもう1回リクエスト
-    sleep(1000)
+    sleep(5000)
     await renoteTarget(notes[99].id, targetNote)
 
 proc fall() {.async.} =
