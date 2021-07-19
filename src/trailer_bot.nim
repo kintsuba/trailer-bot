@@ -1,4 +1,4 @@
-import asyncdispatch, streams, strutils, sequtils, json
+import os, asyncdispatch, streams, strutils, sequtils, json
 import yaml/serialization
 import misskey, types
 import functions/redisutils, functions/filter
@@ -10,6 +10,7 @@ proc main() {.async.} =
 
   # Misskey にリクエスト → 人気の投稿だけをフィルター
   let gottenJson = await getGlobalTL(settings.token, 100)
+  sleep(5000)
   let gottenNotes = gottenJson.toNotes
   let filteredNotes = await gottenNotes.filterPopularNotes(settings.token)
 
