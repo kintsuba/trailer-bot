@@ -15,8 +15,6 @@ type Note* = object
 
 type Settings* = object
   token*: string
-  limitCounts*: int
-  limitMinutes*: int
 
 proc toNotes*(json: JsonNode): seq[Note] =
   if json == "{}".parseJson:

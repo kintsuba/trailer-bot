@@ -9,10 +9,14 @@ proc main() {.async.} =
   load(settingsFile, settings)
 
   # Misskey にリクエスト → 人気の投稿だけをフィルター
-  let gottenJson = await getGlobalTL(settings.token, 100)
+  let gottenGtlJson = await getGlobalTL(settings.token, 100)
   sleep(5000)
-  let gottenNotes = gottenJson.toNotes
-  let filteredNotes = await gottenNotes.filterPopularNotes(settings.token)
+  let gottenLtlJSON = await getLocalTL(settings.token, 100)
+  sleep(5000)
+  let gottenGtlNotes = gottenGtlJson.toNotes
+  let gottenLtlNotes = gottenLtlJson.toNotes
+  let gottenTotalNotes = concat(gottenGtlNotes, gottenLtlNotes)
+  let filteredNotes = await gottenTotalNotes.filterPopularNotes(settings.token)
 
   # Redis に残っているものを取得
   let redisJson = await getRedisByJson("notes")
