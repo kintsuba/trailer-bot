@@ -13,3 +13,4 @@ bin           = @["trailer_bot"]
 
 requires "nim >= 0.10.2"
 requires "yaml >= 0.13.0"
+requires "redis >= 0.2.0"
