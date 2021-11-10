@@ -1,0 +1,5 @@
+%YAML 1.2
+---
+# Your Bot account's token
+# あなたのアカウントの Misskey のトークン
+token: "!*******************"
