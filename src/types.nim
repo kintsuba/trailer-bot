@@ -16,6 +16,10 @@ type Note* = object
 type Settings* = object
   token*: string
 
+type Advertisement* = object
+  text*: string
+  fileIds*: seq[string]
+
 proc toNotes*(json: JsonNode): seq[Note] =
   if json == "{}".parseJson:
     return @[]

@@ -6,9 +6,9 @@ It's a Misskey Bot, search popular note in GTL and LTL, and note it.
 
 ## How to use?
 
-1. Compile source by nim, or download auto builded package (linux only).
-2. make `settings.yaml` same as executable file directory.
-3. edit settings file as below.
+1. Compile source by nim, or download auto-builded package (linux only).
+2. Create `settings.yaml` in the `config` folder.
+3. Edit the file as below.
 
 ```yaml settings.yaml
 %YAML 1.2
@@ -18,8 +18,8 @@ It's a Misskey Bot, search popular note in GTL and LTL, and note it.
 token: "!*******************"
 ```
 
-4. run
+4. Run
 
 ## Who is Trailer-chan?
 
-Trailer (トレーラー) is a character from a game called "俺タワー ～Over Legend Endless Tower～", but her appearance is very cute with an ant motif.
+Trailer (トレーラー) is a character in a game called "俺タワー ～Over Legend Endless Tower～" based on a real-life trailer, and has the appearance of an ant. She's extremely goofy, but cute!
