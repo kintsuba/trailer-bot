@@ -5,7 +5,7 @@ import functions/redisutils, functions/filter
 
 proc main() {.async.} =
   var settings: Settings
-  let settingsFile = newFileStream("settings.yaml")
+  let settingsFile = newFileStream("config/settings.yaml")
   load(settingsFile, settings)
 
   # Misskey にリクエスト → 人気の投稿だけをフィルター
