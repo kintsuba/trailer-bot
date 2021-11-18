@@ -38,7 +38,7 @@ proc main() {.async.} =
 
   # 空だったときはランダムで広告を投稿する
   else:
-    if rand(120000) == 0:
+    if rand(1600) == 0:
       let pick = rand(0..advertisements.len-1)
       discard await note(settings.token, advertisements[pick].text, "home",
           advertisements[pick].fileIds)
