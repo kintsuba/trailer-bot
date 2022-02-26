@@ -27,19 +27,15 @@ proc checkNote(note: Note, token: string): Future[bool] {.async.} =
     let user = await showUser(token, note.userId)
     let description = user["description"].getStr
     let isBot = user["isBot"].getBool
-    let followingCount = user["followingCount"].getInt
-    let followersCount = user["followersCount"].getInt
 
     # ユーザー系のチェック
     if
       description.contains("#nobot") or # bio に nobot が記入されている
-      followingCount < 5 or # フォロー数が少なすぎる
-      followersCount < 5 or # フォロワー数が少なすぎる
       isBot: # そもそもBot
 
       return false # 以上のどれかなら除外
     else:
-      echo "見つけた！"
+      echo "Find! Good luck!"
       sleep(5000) #ユーザーのリクエスト挟んでるので、負荷軽減のため一旦sleep
       return true # 全部くぐり抜けたやつだけtrue
 
