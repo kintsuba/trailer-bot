@@ -34,7 +34,7 @@ proc main() {.async.} =
   # 空じゃなければ一番上にあるやつをRenote → seqから削除
   if totalNotes.len != 0:
     discard await renote(settings.token, totalNotes[0].id, "home")
-    totalNotes.delete(0, 0)
+    totalNotes.delete(0..0)
 
   # 空だったときはランダムで広告を投稿する
   else:
