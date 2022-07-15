@@ -1,8 +1,9 @@
 %YAML 1.2
 ---
 
-- text: |-
-    "【広告】
+- 
+  text: |-
+    【広告】
     みなさん、俺タワーって知ってますか……？
     そうです、私が出てるゲームです！
 
@@ -14,10 +15,35 @@
 
     ?[Android版](https://play.google.com/store/apps/details?id=jp.co.semo.olasma) / ?[iOS版](https://apps.apple.com/jp/app/%E6%AF%8E%E6%97%A5%E3%81%93%E3%81%A4%E3%81%93%E3%81%A4%E4%BF%BA%E3%82%BF%E3%83%AF%E3%83%BC/id1171064884) / ?[DMM版](https://games.dmm.com/detail/olesma)
     
-    #毎日こつこつ #俺タワー"
+    #毎日こつこつ #俺タワー
   
   fileIds:
-    - "618bc826e762b30789d59dcd",
-    - "618bc900e762b30789d59dec",
-    - "618bcb47e762b30789d59e0a",
+    - "618bc826e762b30789d59dcd"
+    - "618bc900e762b30789d59dec"
+    - "618bcb47e762b30789d59e0a"
     - "618bcb9ce762b30789d59e0b"
+
+- 
+  text: |-
+    【広告】
+    毎日こつこつ俺タワーは毎週更新！
+    前編・後編に分けて1週ずつ、計2週のイベントが行われています！
+    
+    最近は、
+    ①鮭の切り身と戦ったり
+    ②カレーを作ったり
+    ③偽ブランド品を買わないように教わったり
+    ④七夕でみんなの短冊を眺めたりしてます！
+
+    いつもドタバタ大騒ぎ、だけどちょっとためになる？
+    そんな毎日こつこつ俺タワー、ぜひ遊んでみてくださいね！
+
+    ?[Android版](https://play.google.com/store/apps/details?id=jp.co.semo.olasma) / ?[iOS版](https://apps.apple.com/jp/app/%E6%AF%8E%E6%97%A5%E3%81%93%E3%81%A4%E3%81%93%E3%81%A4%E4%BF%BA%E3%82%BF%E3%83%AF%E3%83%BC/id1171064884) / ?[DMM版](https://games.dmm.com/detail/olesma)
+    
+    #毎日こつこつ #俺タワー
+  
+  fileIds:
+    - "628f24f2995247bdc84714ce"
+    - "628f24f5995247bdc84714cf"
+    - "62d0c2e0366d47ba6cb3af27"
+    - "62d0c22d366d47ba6cb3af04"
