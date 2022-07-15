@@ -12,6 +12,13 @@ proc requestMisskey*(api: string, httpMethod: HttpMethod, body: string): Future[
   let body = await response.body
   return body.parseJson()
 
+proc requestMisskeyWithoutJson*(api: string, httpMethod: HttpMethod,
+    body: string): Future[bool] {.async.} =
+  let response = await client.request("https://" & host & api,
+      httpMethod = HttpPost, body = $body)
+
+  return if response.status == "204": true else: false
+
 proc getNotes*(token: string, userId: string, limit: int, sinceId: string,
     untilId: string): Future[JsonNode] {.async.} =
   let body = %*{
@@ -66,13 +73,14 @@ proc note*(token: string, text: string, visibility: string,
   return await requestMisskey("notes/create", httpMethod = HttpPost, body = $body)
 
 proc createReaction*(token: string, noteId: string, reaction: string): Future[
-    JsonNode] {.async.} =
+    bool] {.async.} =
   let body = %*{
     "i": token,
     "noteId": noteId,
     "reaction": reaction
   }
-  return await requestMisskey("notes/reactions/create", httpMethod = HttpPost, body = $body)
+  return await requestMisskeyWithoutJson("notes/reactions/create",
+      httpMethod = HttpPost, body = $body)
 
 
 proc showUser*(token: string, userId: string): Future[JsonNode] {.async.} =
