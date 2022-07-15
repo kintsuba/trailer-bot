@@ -65,6 +65,16 @@ proc note*(token: string, text: string, visibility: string,
   }
   return await requestMisskey("notes/create", httpMethod = HttpPost, body = $body)
 
+proc createReaction*(token: string, noteId: string, reaction: string): Future[
+    JsonNode] {.async.} =
+  let body = %*{
+    "i": token,
+    "noteId": noteId,
+    "reaction": reaction
+  }
+  return await requestMisskey("notes/reactions/create", httpMethod = HttpPost, body = $body)
+
+
 proc showUser*(token: string, userId: string): Future[JsonNode] {.async.} =
   let body = %*{
     "i": token,
