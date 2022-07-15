@@ -1,4 +1,6 @@
 trailer_bot
 settings.yaml
+advertisements.yaml
+*.exe
 *.sh
 *.rdb
