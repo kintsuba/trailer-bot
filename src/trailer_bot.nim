@@ -22,7 +22,7 @@ proc main() {.async.} =
   let gottenGtlNotes = gottenGtlJson.toNotes
   let gottenLtlNotes = gottenLtlJson.toNotes
   let gottenTotalNotes = concat(gottenGtlNotes, gottenLtlNotes)
-  discard await gottenTotalNotes.reactNotes(settings.token)
+  let reactedNotes = await gottenTotalNotes.reactNotes(settings.token)
   let filteredNotes = await gottenTotalNotes.filterPopularNotes(settings.token)
 
   # Redis に残っているものを取得
