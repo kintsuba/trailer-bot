@@ -3,7 +3,7 @@ import ../types, ../misskey
 
 proc checkNote(note: Note, token: string): Future[bool] {.async.} =
   if note.text.contains("トレーラーちゃん"):
-    discard await createReaction(token, note.id, "🚛")
+    let result = await createReaction(token, note.id, "🚛")
     sleep(5000)
     return true
 
