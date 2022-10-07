@@ -5,17 +5,19 @@ proc checkNote(note: Note, token: string): Future[bool] {.async.} =
   var bonus: int = 0
 
   # 独断と偏見によるボーナス
-  if note.text.contains("俺タワー"): bonus += 1
-  if note.text.contains("毎日こつこつ"): bonus += 1
+  if note.text.contains("俺タワー"): bonus += 2
+  if note.text.contains("毎日こつこつ"): bonus += 2
 
   # note単体のチェック
   if not note.myRenoteId.isEmptyOrWhitespace or # 既にRenoteしていない
     note.localOnly or
     note.copyOnce or
     note.text.contains("#nobot") or
+    note.text.contains("ろぐぼ") or
     note.text.contains("ログボ") or
     note.text.contains("ﾌｸﾞﾊﾟﾝﾁ") or
-    note.score + bonus < 5: # ボーナス含めたスコアでチェック
+    note.text.contains("おはよ") or
+    note.score + bonus < 7: # ボーナス含めたスコアでチェック
 
     return false # 上記の条件を1つでも満たしていたら除外
 
