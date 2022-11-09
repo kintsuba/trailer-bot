@@ -1,7 +1,7 @@
 import os, asyncdispatch, streams, strutils, sequtils, json, random
 import yaml/serialization
 import misskey, types
-import functions/redisutils, functions/filter
+import functions/redisutils, functions/filter, functions/react
 
 proc main() {.async.} =
   var settings: Settings
@@ -22,6 +22,7 @@ proc main() {.async.} =
   let gottenGtlNotes = gottenGtlJson.toNotes
   let gottenLtlNotes = gottenLtlJson.toNotes
   let gottenTotalNotes = concat(gottenGtlNotes, gottenLtlNotes)
+  let reactedNotes = await gottenTotalNotes.reactNotes(settings.token)
   let filteredNotes = await gottenTotalNotes.filterPopularNotes(settings.token)
 
   # Redis に残っているものを取得
