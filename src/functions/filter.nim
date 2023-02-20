@@ -17,11 +17,15 @@ proc checkNote(note: Note, token: string): Future[bool] {.async.} =
     note.text.contains("ログボ") or
     note.text.contains("ﾌｸﾞﾊﾟﾝﾁ") or
     note.text.contains("おはよ") or
+    note.text.contains("てすと") or
+    note.text.contains("テスト") or
     note.score + bonus < 7: # ボーナス含めたスコアでチェック
 
     return false # 上記の条件を1つでも満たしていたら除外
 
   else:
+    var adjustScore: int = 0
+
     echo "Find a matched note!"
     echo "score: " & $note.score
 
@@ -29,6 +33,8 @@ proc checkNote(note: Note, token: string): Future[bool] {.async.} =
     let user = await showUser(token, note.userId)
     let description = user["description"].getStr
     let isBot = user["isBot"].getBool
+    let host = user["host"].getStr
+    let userId = user["id"].getStr
 
     # ユーザー系のチェック
     if
@@ -36,10 +42,18 @@ proc checkNote(note: Note, token: string): Future[bool] {.async.} =
       isBot: # そもそもBot
 
       return false # 以上のどれかなら除外
-    else:
+
+    if host == "misskey.io":
+      adjustScore -= 10
+    if userId == "5cb377a8b622604a9118ae51":
+      adjustScore -= 10
+
+    if note.score + bonus + adjustScore < 7:
       echo "Find! Good luck!"
       sleep(5000) #ユーザーのリクエスト挟んでるので、負荷軽減のため一旦sleep
       return true # 全部くぐり抜けたやつだけtrue
+    else:
+      return false
 
 
 proc filterPopularNotes*(notes: seq[Note], token: string): Future[seq[Note]] {.async.} =
