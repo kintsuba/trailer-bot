@@ -1,10 +1,10 @@
-import os, strutils, sequtils, asyncdispatch, json
+import strutils, sequtils, asyncdispatch
 import ../types, ../misskey
 
 proc checkNote(note: Note, token: string): Future[bool] {.async.} =
   if note.text.contains("トレーラーちゃん"):
     discard await createReaction(token, note.id, "🚛")
-    sleep(5000)
+    await sleepAsync(5000)
     return true
 
   return false

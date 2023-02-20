@@ -1,4 +1,4 @@
-import os, asyncdispatch, streams, strutils, sequtils, json, random
+import asyncdispatch, streams, strutils, sequtils, json, random
 import yaml/serialization
 import misskey, types
 import functions/redisutils, functions/filter, functions/react
@@ -16,9 +16,9 @@ proc main() {.async.} =
 
   # Misskey にリクエスト → 人気の投稿だけをフィルター
   let gottenGtlJson = await getGlobalTL(settings.token, 100)
-  sleep(5000)
+  await sleepAsync(5000)
   let gottenLtlJSON = await getLocalTL(settings.token, 100)
-  sleep(5000)
+  await sleepAsync(5000)
   let gottenGtlNotes = gottenGtlJson.toNotes
   let gottenLtlNotes = gottenLtlJson.toNotes
   let gottenTotalNotes = concat(gottenGtlNotes, gottenLtlNotes)
