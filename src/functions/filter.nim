@@ -41,6 +41,7 @@ proc checkNote(note: Note, token: string): Future[bool] {.async.} =
       description.contains("#nobot") or # bio に nobot が記入されている
       isBot: # そもそもBot
 
+      echo "It's bot's Note."
       return false # 以上のどれかなら除外
 
     if host == "misskey.io":
@@ -49,12 +50,16 @@ proc checkNote(note: Note, token: string): Future[bool] {.async.} =
       adjustScore -= 10
 
     await sleepAsync(5000) #ユーザーのリクエスト挟んでるので、負荷軽減のため一旦sleep
+
+    if note.score + bonus + adjustScore >= 7:
       echo "Find! Good luck!"
-      sleep(5000) #ユーザーのリクエスト挟んでるので、負荷軽減のため一旦sleep
       return true # 全部くぐり抜けたやつだけtrue
     else:
+      echo "Not enough score."
       return false
 
 
-proc filterPopularNotes*(notes: seq[Note], token: string): Future[seq[Note]] {.async.} =
+proc filterPopularNotes*(notes: seq[Note], token: string):
+  Future[seq[Note]] {.async.} =
+
   return notes.filterIt(await checkNote(it, token))
