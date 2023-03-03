@@ -17,6 +17,7 @@ proc checkNote(note: Note, token: string): Future[bool] {.async.} =
     note.text.contains("ログボ") or
     note.text.contains("ﾌｸﾞﾊﾟﾝﾁ") or
     note.text.contains("おはよ") or
+    note.text.contains("ただいま") or
     note.text.contains("てすと") or
     note.text.contains("テスト") or
     note.score + bonus < 7: # ボーナス含めたスコアでチェック
@@ -45,9 +46,9 @@ proc checkNote(note: Note, token: string): Future[bool] {.async.} =
       return false # 以上のどれかなら除外
 
     if host == "misskey.io":
-      adjustScore -= 10
+      adjustScore -= 30
     if userId == "5cb377a8b622604a9118ae51":
-      adjustScore -= 10
+      adjustScore -= 30
 
     await sleepAsync(5000) #ユーザーのリクエスト挟んでるので、負荷軽減のため一旦sleep
 
